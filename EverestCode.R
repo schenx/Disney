@@ -1,7 +1,7 @@
 ##
 ##  
 ##  Expedition Everest Wait Time project Code
-##  Steven Chen - June 7 2019
+##  Steven Chen - June 25 2019
 ##  for EdX HarvardX PH125.9x Data Science: Capstone
 ##
 ##  Code to load, analyze, and model Wait Time data for the Walt Disney World

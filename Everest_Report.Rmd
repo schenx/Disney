@@ -45,7 +45,7 @@ EverestData <- read.csv("https://raw.githubusercontent.com/schenx/Disney/master/
 EverestData$DATE <- lubridate::mdy(EverestData$DATE)
 EverestData$Time <- lubridate::hm(EverestData$Time)
 
-# Create a "TimeSec" field which converts time of day from HH:MM to Hours in decimals
+# Create a "TimeHour" field which converts time of day from HH:MM to Hours in decimals
 EverestData <- EverestData %>% mutate(TimeHour = (as.numeric(EverestData$Time))/3600)
 ```
 
@@ -126,7 +126,7 @@ Plotting average wait times by day of week clearly show higher wait times on the
 
 ```{r Time of Day, echo=FALSE}
 # Wait Time during Time of Day
-ggplot(EverestData, aes(x=TimeSec, y=Wait_Time)) + geom_point(color="red") +
+ggplot(EverestData, aes(x=TimeHour, y=Wait_Time)) + geom_point(color="red") +
   labs(title = "Expedition Everest Wait Time During Time of Day (in Seconds)")
 ```
 
@@ -174,13 +174,13 @@ Not surprisingly, the RMSE is quite large given the distrbution of the data.
 
 ## Linear Regression Model Approach Results
 
-A simple linear regression model was created using factors such as DAYOFWEEK, DAYOFYEAR, TimeSec, etc. as used in the visualzations. 
+A simple linear regression model was created using factors such as DAYOFWEEK, DAYOFYEAR, TimeHour, etc. as used in the visualzations. 
 
 ```{r Linear, echo=FALSE, warning=FALSE}
 
 # Linear Model Approach
 fit <- lm(Wait_Time ~ DAYOFWEEK + DAYOFYEAR + WEEKOFYEAR + MONTHOFYEAR
-          + AKEMHMORN + AKEMHEVE + AKHOURSEMH + AKHOURS + TimeSec, data = Everest_Train)
+          + AKEMHMORN + AKEMHEVE + AKHOURSEMH + AKHOURS + TimeHour, data = Everest_Train)
 y_hat <- predict(fit, validation)
 linear_rmse <- RMSE(validation$Wait_Time, y_hat)
 rmse_results <- bind_rows(rmse_results, data_frame(method = "Linear Model Approach", RMSE = linear_rmse))
