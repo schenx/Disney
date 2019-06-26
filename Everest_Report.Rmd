@@ -1,7 +1,7 @@
 ---
-title: "Wait Time Machine Learning Models for Expedition Everest"
+title: "Expedition Everest Wait Time Machine Learning Models"
 author: "Steven Chen"
-date: "June 10, 2019"
+date: "June 25, 2019"
 output:
   pdf_document: default
   html_document: default
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Walt Disney World in Orlando, Florida USA is a theme park resort owned and operated by the Walt Disney Company.  Consisting of four major theme parks and 34 resorts and hotels on property, Walt Disney World has over 58 million visitors per year. 
 
-Expedition Everest (full name "Expedition Everest - Legend of the Forbidden Mountain") is a high speed steel roller coaster thriller attraction (ride) at Walt Disney World's Animal Kingdom that takes guests through simulated Himilaya mountains while encountering a feared Yeti creature.  Expedition Everest was built in 2006 and is reported to be the most expensive roller coaster ever built at an estimated cost of $100 million USD. The attraction experience takes three minutes and covers over 4,000 feet of track with the coasters reaching speeds of 50 miles per hour. It is one of the more popular attraction at Animal Kingdom. 
+Expedition Everest (full name "Expedition Everest - Legend of the Forbidden Mountain") is a high speed steel roller coaster thriller attraction (ride) at Walt Disney World's Animal Kingdom that takes guests through simulated Himilaya mountains while encountering a feared Yeti creature.  Expedition Everest was built in 2006 and is reported to be the most expensive roller coaster ever built at an estimated cost of $100 million USD. The attraction experience takes three minutes and covers over 4,000 feet of track with the coasters reaching speeds of 50 miles per hour. It is one of the more popular attractions at Animal Kingdom theme park. 
 
 Expedition Everest attraction wait time data are used as the basis of this project with the goal of using machine learning to determine a method of predicting accurate wait times. 
 
@@ -41,13 +41,12 @@ library(lubridate)
 # Load Everest Data file
 # Data files are stored locally
 # lubridate used to make date and time data uniform
-setwd("C://Users/Steven Chen/Documents/R/projects/Disney")
-EverestData <- read.csv("Everest_Data_Small.csv")
+EverestData <- read.csv("https://raw.githubusercontent.com/schenx/Disney/master/Everest_Data_Small.csv")
 EverestData$DATE <- lubridate::mdy(EverestData$DATE)
 EverestData$Time <- lubridate::hm(EverestData$Time)
 
-# Create a "TimeSec" field which converts time of day from HH:MM to seconds
-EverestData <- EverestData %>% mutate(TimeSec = as.numeric(EverestData$Time))
+# Create a "TimeSec" field which converts time of day from HH:MM to Hours in decimals
+EverestData <- EverestData %>% mutate(TimeHour = (as.numeric(EverestData$Time))/3600)
 ```
 
 ## Data Exploration and Visualzation
@@ -262,7 +261,7 @@ This led to an improvement in the RMSE reducing RMSE to 10.3 seconds.
 
 ## Conclusions
 
-Using a KNN and Random Forest ensemble approach resulted in the most accurate wait time prediction model. The RMSE of 10.3, while an improvement of 3.8 minutes over the Naive model, still seems relatively large.  In the future it would be good to include the categorical data (converting to binrary or other numerical values) as well as data from other theme parks to see if this has an impact on the RMSE.  What's not clear is how to acutally use the model to predict lower times.  Perhaps this can be determined by applying the y_hat to the validation data to see what factors are the greatest attribute. 
+Using a KNN and Random Forest ensemble approach resulted in the smallest RMSE wait time prediction model with a RMSE of 10.3 minutes.  While an improvement of 3.8 minutes over the Naive model is a 27% improvement, it still seems relatively large.  In the future it would be good to include the categorical data (converting to binrary or other numerical values), data from other attractions, as well as data from other theme parks to see if this has an impact on the Expedition Everest wait times. What's not clear is how to acutally use the model to actually predict lower times.  Perhaps this can be determined by applying the y_hat to the validation data to see what factors are the greatest attribute. 
 
 ## References
 

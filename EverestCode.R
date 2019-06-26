@@ -15,17 +15,18 @@ library(dplyr)
 library(tidyverse)
 library(caret)
 library(lubridate)
+library(httr)
 
 # Load Everest Data file
 # Data files are stored locally
 # lubridate used to make date and time data uniform
-setwd("C://Users/Steven Chen/Documents/R/projects/Disney")
-EverestData <- read.csv("Everest_Data_Small.csv")
+
+EverestData <- read.csv("https://raw.githubusercontent.com/schenx/Disney/master/Everest_Data_Small.csv")
 EverestData$DATE <- lubridate::mdy(EverestData$DATE)
 EverestData$Time <- lubridate::hm(EverestData$Time)
 
-# Create a "TimeSec" field which converts time of day from HH:MM to seconds
-EverestData <- EverestData %>% mutate(TimeSec = as.numeric(EverestData$Time))
+# Create a "TimeHour" field which converts time of day from HH:MM to hours in decimals
+EverestData <- EverestData %>% mutate(TimeHour = (as.numeric(EverestData$Time))/3600) 
 
 # Summary Statistics
 ev_mean <- mean(EverestData$Wait_Time)
@@ -72,12 +73,12 @@ ggplot(DoW_Avg, aes(x=DAYOFWEEK, y=Avg_Wait)) + geom_bar(stat="identity", width=
   labs(title="Expedition Everest Average Wait Time by Day of Week")
 
 # Wait Time during Time of Day
-ggplot(EverestData, aes(x=TimeSec, y=Wait_Time)) + geom_point(color="red") +
-  labs(title = "Expedition Everest Wait Time During Time of Day (in Seconds)")
+ggplot(EverestData, aes(x=TimeHour, y=Wait_Time)) + geom_point(color="tomato3") +
+  labs(title = "Expedition Everest Wait Time During Time of Day (by Hour)")
 
 # Create Validation and Test Sets
-set.seed(1) 
-test_index <- createDataPartition(y = EverestData$Wait_Time, times = 1, p = 0.2, list = FALSE)
+set.seed(3) 
+test_index <- createDataPartition(y = EverestData$Wait_Time, times = 1, p = 0.1, list = FALSE)
 Everest_Train <- EverestData[-test_index,]
 validation <- EverestData[test_index,]
 rm(test_index)
@@ -95,7 +96,7 @@ rmse_results
 
 # Linear Model Approach
 fit <- lm(Wait_Time ~ DAYOFWEEK + DAYOFYEAR + WEEKOFYEAR + MONTHOFYEAR
-          + AKEMHMORN + AKEMHEVE + AKHOURSEMH + AKHOURS + TimeSec, data = Everest_Train)
+          + AKEMHMORN + AKEMHEVE + AKHOURSEMH + AKHOURS + TimeHour, data = Everest_Train)
 y_hat <- predict(fit, validation)
 linear_rmse <- RMSE(validation$Wait_Time, y_hat)
 rmse_results <- bind_rows(rmse_results, data_frame(method = "Linear Model Approach", RMSE = linear_rmse))
@@ -138,3 +139,7 @@ ensemble_rmse <- RMSE(validation$Wait_Time, y_hat)
 rmse_results <- bind_rows(rmse_results, data_frame(method = "Ensemble (KNN + Random Forest) Approach",
                                                   RMSE = ensemble_rmse))
 rmse_results
+
+# Variable Importance
+
+
