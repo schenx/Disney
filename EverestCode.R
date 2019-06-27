@@ -141,5 +141,7 @@ rmse_results <- bind_rows(rmse_results, data_frame(method = "Ensemble (KNN + Ran
 rmse_results
 
 # Variable Importance
+# Plot of Random Forest Variable Importance
+varImpPlot(train_rf, type=2)
 
 

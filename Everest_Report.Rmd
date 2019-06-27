@@ -126,7 +126,7 @@ Plotting average wait times by day of week clearly show higher wait times on the
 
 ```{r Time of Day, echo=FALSE}
 # Wait Time during Time of Day
-ggplot(EverestData, aes(x=TimeHour, y=Wait_Time)) + geom_point(color="red") +
+ggplot(EverestData, aes(x=TimeHour, y=Wait_Time)) + geom_point(color="tomato3") +
   labs(title = "Expedition Everest Wait Time During Time of Day (in Seconds)")
 ```
 
@@ -240,7 +240,15 @@ rmse_results <- bind_rows(rmse_results, data_frame(method = "Random Forest Appro
 rmse_results
 ```
 
-There is no improvement in RMSE with Random Forest approach over Regression Tree.  Perhaps the Regression Tree is already optimized?
+There is no improvement in RMSE with Random Forest approach over Regression Tree.  Perhaps the Regression Tree is already optimized? Running a variable importance plot shows that time of day (Time Hour) is the most important variable by far.
+
+
+```{r Random Forest VarImp, echo=FALSE, warning=FALSE, message=FALSE}
+
+# Plot of Random Forest Variable Importance
+# Plot of Random Forest Variable Importance
+varImpPlot(train_rf, type=2)
+```
 
 ## Ensemble Approach Results
 
@@ -257,11 +265,11 @@ rmse_results <- bind_rows(rmse_results, data_frame(method = "Ensemble (KNN + Ran
 rmse_results
 ```
 
-This led to an improvement in the RMSE reducing RMSE to 10.3 seconds. 
+This led to an improvement in the RMSE reducing RMSE to 10.6 minutes. 
 
 ## Conclusions
 
-Using a KNN and Random Forest ensemble approach resulted in the smallest RMSE wait time prediction model with a RMSE of 10.3 minutes.  While an improvement of 3.8 minutes over the Naive model is a 27% improvement, it still seems relatively large.  In the future it would be good to include the categorical data (converting to binrary or other numerical values), data from other attractions, as well as data from other theme parks to see if this has an impact on the Expedition Everest wait times. What's not clear is how to acutally use the model to actually predict lower times.  Perhaps this can be determined by applying the y_hat to the validation data to see what factors are the greatest attribute. 
+Using a KNN and Random Forest ensemble approach resulted in the smallest RMSE wait time prediction model with a RMSE of 10.6 minutes.  While an improvement of 3.3 minutes over the Naive model is a 24% improvement, it still seems relatively large.  In the future it would be good to include the categorical data (converting to binrary or other numerical values), data from other attractions, as well as data from other theme parks to see if this has an impact on the Expedition Everest wait times. What's not clear is how to acutally use the model to actually predict lower times.  Perhaps this can be determined by applying the fitted model to some test data to see what the predicted wait times would be. 
 
 ## References
 
